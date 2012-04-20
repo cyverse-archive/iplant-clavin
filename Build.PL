@@ -1,4 +1,4 @@
-use 5.006;
+use 5.008;
 use strict;
 use warnings;
 use Module::Build;
@@ -11,8 +11,11 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
     },
+    configure_requires => { 'Module::Build' => 0.38 },
     requires => {
-        'perl' => 5.006,
+        'Net::ZooKeeper' => '0.35',
+        'List::MoreUtils' => '0.30',
+        'perl' => 5.008,
     },
     add_to_cleanup      => [ 'IPlant-Clavin-*' ],
     create_makefile_pl => 'traditional',

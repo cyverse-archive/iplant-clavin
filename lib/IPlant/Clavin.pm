@@ -1,111 +1,76 @@
 package IPlant::Clavin;
 
-use 5.006;
+use 5.008;
 use strict;
 use warnings;
 
-=head1 NAME
+use Carp;
+use Class::Std;
+use English qw(-no_match_vars);
+use IO::Socket::INET;
+use IPlant::Clavin::Util qw(any_blank);
+use Net::Zookeeper qw(:node_flags :acls);
 
-IPlant::Clavin - The great new IPlant::Clavin!
+{
+    my %zkh_of      :ATTR;
+    my %local_ip_of :ATTR;
 
-=head1 VERSION
+    sub BUILD {
+        my ( $self, $ident, $arg_ref ) = @_;
 
-Version 0.01
+        # Fetch the connection string from the argument list.
+        my $zk_hosts = $arg_ref->{zk_hosts};
+        croak "missing required argument: zk_hosts"
+            if !defined $zk_hosts;
+        croak "a value is required for the zk_hosts argument"
+            if $zk_hosts =~ m/ \A \s* \z /xms;
 
-=cut
+        # Get the local IP address used to connect to Zookeeper.
+        my $ip = $self->_get_local_ip($zk_hosts);
+        croak "unable to get local IP address"
+            if !defined $ip;
 
-our $VERSION = '0.01';
+        # Establish the zookeeper connection.
+        my $zkh = Net::Zookeeper->new($zk_hosts);
+        croak "unable to establish Zookeeper session: $zkh->get_error()"
+            if !defined $zkh;
 
+        # Store the zookeeper handle.
+        %zkh_of{$ident} = $zkh;
 
-=head1 SYNOPSIS
+        return;
+    }
 
-Quick summary of what the module does.
+    sub _get_local_ip {
+        my ( $self, $zk_hosts ) = @_;
+        my $ip;
 
-Perhaps a little code snippet.
+        # Attempt to connect to each host in the zookeeper cluster.
+        NODE:
+        for my $node ( split m/,/xms, $zk_hosts ) {
+            my ( $host, $port ) = ( split m/:/xms, $node );
+            croak "invalid zookeeper node: $node"
+                if any_blank( $host, $port );
+            my $sock = IO::Socket::INET->new(
+                PeerAddr => $host,
+                PeerPort => $port,
+                Proto    => 'TCP',
+            );
+            if ( defined $sock ) {
+                $ip = $sock->sockhost();
+                last NODE;
+            }
+        }
 
-    use IPlant::Clavin;
+        return $ip;
+    }
 
-    my $foo = IPlant::Clavin->new();
-    ...
+    sub _deployment {
+        my ($self) = @_;
+    }
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
-
-=cut
-
-sub function1 {
+    sub can_run {
+        my ($self) = @_;
+        return defined $self->_deployment();
+    }
 }
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
-
-=head1 AUTHOR
-
-Dennis Roberts, C<< <dennis at iplantcollaborative.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-iplant-clavin at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=IPlant-Clavin>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc IPlant::Clavin
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker (report bugs here)
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=IPlant-Clavin>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/IPlant-Clavin>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/IPlant-Clavin>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/IPlant-Clavin/>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2012 Dennis Roberts.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
-
-
-=cut
-
-1; # End of IPlant::Clavin
