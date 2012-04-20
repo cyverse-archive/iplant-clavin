@@ -35,8 +35,9 @@ use Net::Zookeeper qw(:node_flags :acls);
         croak "unable to establish Zookeeper session: $zkh->get_error()"
             if !defined $zkh;
 
-        # Store the zookeeper handle.
-        %zkh_of{$ident} = $zkh;
+        # Store the attributes.
+        %zkh_of{$ident}      = $zkh;
+        $local_ip_of{$ident} = $ip;
 
         return;
     }
