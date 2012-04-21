@@ -1,9 +1,14 @@
+.perlcriticrc
+.perltidyrc
 Build.PL
 Changes
+ignore.txt
 lib/IPlant/Clavin.pm
+lib/IPlant/Clavin/Util.pm
 MANIFEST			This list of files
-README
+README.markdown
 t/00-load.t
+t/boilerplate.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
