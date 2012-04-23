@@ -51,6 +51,27 @@ $ make
 $ sudo make install
 ```
 
+## Basic Usage
+
+IPlant::Clavin is a very simple module that can be used to obtain
+configuration settings from a Zookeeper cluster into which configuration
+settings have been loaded using Clavin.
+
+```perl
+use IPlant::Clavin;
+
+# Create a new Clavin client instance.
+my $clavin = IPlant::Clavin->new(
+    { zk_hosts => 'by-tor:1234,snow-dog:4321' } );
+
+# Verify that services are permitted to run on the local host.
+my $can_run = $clavin->can_run();
+
+# Optain configuration properties for a service.
+my $props_ref  = $clavin->properties('some-service-name');
+my $prop-value = $props_ref->{some-prop-name};
+```
+
 ## Support and Documentation
 
 After installing, you can find documentation for this module with the
