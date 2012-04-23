@@ -69,7 +69,7 @@ my $can_run = $clavin->can_run();
 
 # Optain configuration properties for a service.
 my $props_ref  = $clavin->properties('some-service-name');
-my $prop-value = $props_ref->{some-prop-name};
+my $prop_value = $props_ref->{'some-prop-name'};
 ```
 
 ## Support and Documentation
