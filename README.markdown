@@ -27,7 +27,7 @@ install Zookeeper.  If you do need to install Zookeeper on a RedHat compatible
 system, you can use `yum`:
 
 ```
-$ yum install zookeeper-lib
+$ yum install zookeeper
 ```
 
 Assuming that the include directory is `/usr/include/zookeeper` and the
