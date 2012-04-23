@@ -106,7 +106,7 @@ the string to check.
 
 =back
 
-=head2 any_blanki
+=head2 any_blank
 
 Returns a true value if any of the strings in the argument list is undefined,
 empty or contains only whitespace.

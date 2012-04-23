@@ -365,14 +365,14 @@ Version 0.88 of this module is required and available from CPAN.
 
 =head2 Zookeeper C Client Library
 
-This is installed with either the C<zookeeper> or C<zookeeper-lib> RPMs on
-RedHat-compatible Linux systems.  On other systems, it may be necessary to
-install the client library from source.  This library must be installed before
-attempting to install Net::ZooKeeper.
+This is installed with either the C<zookeeper> RPM on RedHat-compatible Linux
+systems.  On other systems, it may be necessary to install the client library
+from source.  This library must be installed before attempting to install
+Net::ZooKeeper.
 
 =head1 INCOMPATIBILITIES
 
-There are no know incompatibilities at this time.
+There are no known incompatibilities at this time.
 
 =head1 BUGS AND LIMITATIONS
 
